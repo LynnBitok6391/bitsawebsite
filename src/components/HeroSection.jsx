@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "../styles/hero.css";
 import LetterGlitch from "./LetterGlitch";
 
@@ -15,8 +16,8 @@ export default function HeroSection() {
         <h1 className="glitch" data-text="Welcome to BITSA">Welcome to BITSA</h1>
         <p className="hero-sub">Connecting Software Engineering, BBIT & Networking students at ISC.</p>
         <div className="hero-ctas">
-          <a href="/login" className="btn">Join BITSA</a>
-          <a href="/events" className="btn-ghost">Explore Events</a>
+          <Link to="/login" className="btn">Join BITSA</Link>
+          <Link to="/events" className="btn-ghost">Explore Events</Link>
         </div>
       </div>
     </section>
