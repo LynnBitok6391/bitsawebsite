@@ -59,6 +59,7 @@ export default function Navbar() {
           <Link to="/gallery" onClick={() => setIsMenuOpen(false)}>Gallery</Link>
           <Link to="/events" onClick={() => setIsMenuOpen(false)}>Events</Link>
           <Link to="/blogs" onClick={() => setIsMenuOpen(false)}>Blogs</Link>
+          <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
 
           {isLoggedIn ? (
             <>

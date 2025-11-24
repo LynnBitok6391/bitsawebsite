@@ -8,11 +8,13 @@ import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import LecturerDashboard from "./pages/LecturerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import AlumniDashboard from "./pages/AlumniDashboard";
 import About from "./pages/About";
 import Gallery from "./pages/Gallery";
 import Blogs from "./pages/Blogs";
 import Events from "./pages/Events";
 import Blog from "./pages/Blog";
+import Contact from "./pages/Contact";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -26,6 +28,7 @@ export default function App() {
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
@@ -51,6 +54,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRole="admin">
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/alumni"
+          element={
+            <ProtectedRoute allowedRole="alumni">
+              <AlumniDashboard />
             </ProtectedRoute>
           }
         />

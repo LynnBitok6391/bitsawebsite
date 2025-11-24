@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 
 const LetterGlitch = ({
-  glitchColors = ['#322b45ff', '#61dca3', '#61b3dc'],
+  glitchColors = ['#1a1f3a', '#302a8fff', '#40699eff', '#0e072eff', '#78c2e4ff'],
   className = '',
   glitchSpeed = 50,
   centerVignette = false,
@@ -39,10 +39,10 @@ const LetterGlitch = ({
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-        }
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      }
       : null;
   };
 

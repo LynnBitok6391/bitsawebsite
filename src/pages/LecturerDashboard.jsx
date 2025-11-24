@@ -1,12 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
 import "../styles/dashboard.css";
 
 export default function LecturerDashboard() {
+  const { user, getProfile, updateProfile } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("overview");
   const [materials, setMaterials] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Profile state
+  const [profile, setProfile] = useState({
+    profilePicture: "",
+    department: "",
+    expertise: "",
+    bio: "",
+    officeHours: ""
+  });
+
+  useEffect(() => {
+    if (user) {
+      const userProfile = getProfile(user.id);
+      if (userProfile) {
+        setProfile(userProfile);
+      }
+    }
+  }, [user, getProfile]);
+
+  const handleProfileUpdate = (e) => {
+    e.preventDefault();
+    if (user) {
+      updateProfile(user.id, profile);
+      alert("Profile updated successfully!");
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfile(prev => ({ ...prev, profilePicture: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleAddMaterial = (e) => {
     e.preventDefault();
@@ -47,6 +86,7 @@ export default function LecturerDashboard() {
       <div className="dashboard-sidebar">
         <h2 className="sidebar-title">Lecturer Panel</h2>
         <button className={activeTab === "overview" ? "active" : ""} onClick={() => setActiveTab("overview")}>Overview</button>
+        <button className={activeTab === "profile" ? "active" : ""} onClick={() => setActiveTab("profile")}>Profile</button>
         <button className={activeTab === "materials" ? "active" : ""} onClick={() => setActiveTab("materials")}>Upload Materials</button>
         <button className={activeTab === "announcements" ? "active" : ""} onClick={() => setActiveTab("announcements")}>Announcements</button>
         <button className={activeTab === "events" ? "active" : ""} onClick={() => setActiveTab("events")}>Manage Events</button>
@@ -73,6 +113,65 @@ export default function LecturerDashboard() {
               </div>
             </div>
           </>
+        )}
+
+        {activeTab === "profile" && (
+          <div className="dashboard-section">
+            <h3>My Profile</h3>
+            <form className="dashboard-form" onSubmit={handleProfileUpdate}>
+              <div className="profile-picture-section">
+                {profile.profilePicture && (
+                  <img src={profile.profilePicture} alt="Profile" className="profile-picture-preview" />
+                )}
+                <label className="profile-picture-label">
+                  Profile Picture
+                  <input type="file" accept="image/*" onChange={handleImageUpload} />
+                </label>
+              </div>
+
+              <label>
+                Department
+                <input
+                  type="text"
+                  placeholder="e.g., Computer Science, IT"
+                  value={profile.department}
+                  onChange={(e) => setProfile({ ...profile, department: e.target.value })}
+                />
+              </label>
+
+              <label>
+                Areas of Expertise
+                <input
+                  type="text"
+                  placeholder="e.g., Machine Learning, Web Development, Networks"
+                  value={profile.expertise}
+                  onChange={(e) => setProfile({ ...profile, expertise: e.target.value })}
+                />
+              </label>
+
+              <label>
+                Office Hours
+                <input
+                  type="text"
+                  placeholder="e.g., Mon-Fri 2-4 PM"
+                  value={profile.officeHours}
+                  onChange={(e) => setProfile({ ...profile, officeHours: e.target.value })}
+                />
+              </label>
+
+              <label>
+                Bio
+                <textarea
+                  placeholder="Tell students about yourself and your teaching approach..."
+                  rows="5"
+                  value={profile.bio}
+                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                />
+              </label>
+
+              <button type="submit" className="btn">Save Profile</button>
+            </form>
+          </div>
         )}
 
         {activeTab === "materials" && (

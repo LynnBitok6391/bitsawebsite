@@ -1,10 +1,48 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 import "../styles/dashboard.css";
 
 export default function AdminDashboard() {
+  const { user, getPendingBlogs, approveBlog, rejectBlog, getProfile, updateProfile } = useContext(AuthContext);
   const [activeTab, setActiveTab] = React.useState("overview");
   const [blogForm, setBlogForm] = React.useState({ title: "", content: "", author: "" });
   const [eventForm, setEventForm] = React.useState({ title: "", date: "", location: "", description: "" });
+
+  // Profile state
+  const [profile, setProfile] = useState({
+    profilePicture: "",
+    role: "Administrator",
+    department: "",
+    bio: ""
+  });
+
+  useEffect(() => {
+    if (user) {
+      const userProfile = getProfile(user.id);
+      if (userProfile) {
+        setProfile(userProfile);
+      }
+    }
+  }, [user, getProfile]);
+
+  const handleProfileUpdate = (e) => {
+    e.preventDefault();
+    if (user) {
+      updateProfile(user.id, profile);
+      alert("Profile updated successfully!");
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfile(prev => ({ ...prev, profilePicture: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const stats = [
     { title: "Total Users", value: 120 },
@@ -37,7 +75,9 @@ export default function AdminDashboard() {
       <div className="dashboard-sidebar">
         <h2 className="sidebar-title">Admin Panel</h2>
         <button className={activeTab === "overview" ? "active" : ""} onClick={() => setActiveTab("overview")}>Overview</button>
+        <button className={activeTab === "profile" ? "active" : ""} onClick={() => setActiveTab("profile")}>Profile</button>
         <button className={activeTab === "users" ? "active" : ""} onClick={() => setActiveTab("users")}>Users</button>
+        <button className={activeTab === "approveblogs" ? "active" : ""} onClick={() => setActiveTab("approveblogs")}>Approve Blogs</button>
         <button className={activeTab === "blogs" ? "active" : ""} onClick={() => setActiveTab("blogs")}>Post Blog</button>
         <button className={activeTab === "events" ? "active" : ""} onClick={() => setActiveTab("events")}>Post Event</button>
         <button className={activeTab === "analytics" ? "active" : ""} onClick={() => setActiveTab("analytics")}>Analytics</button>
@@ -63,6 +103,55 @@ export default function AdminDashboard() {
           </>
         )}
 
+        {activeTab === "profile" && (
+          <div className="dashboard-section">
+            <h3>My Profile</h3>
+            <form className="dashboard-form" onSubmit={handleProfileUpdate}>
+              <div className="profile-picture-section">
+                {profile.profilePicture && (
+                  <img src={profile.profilePicture} alt="Profile" className="profile-picture-preview" />
+                )}
+                <label className="profile-picture-label">
+                  Profile Picture
+                  <input type="file" accept="image/*" onChange={handleImageUpload} />
+                </label>
+              </div>
+
+              <label>
+                Role
+                <input
+                  type="text"
+                  placeholder="Administrator"
+                  value={profile.role}
+                  onChange={(e) => setProfile({ ...profile, role: e.target.value })}
+                />
+              </label>
+
+              <label>
+                Department
+                <input
+                  type="text"
+                  placeholder="e.g., Administration, IT Management"
+                  value={profile.department}
+                  onChange={(e) => setProfile({ ...profile, department: e.target.value })}
+                />
+              </label>
+
+              <label>
+                Bio
+                <textarea
+                  placeholder="Brief description of your role and responsibilities..."
+                  rows="4"
+                  value={profile.bio}
+                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                />
+              </label>
+
+              <button type="submit" className="btn">Save Profile</button>
+            </form>
+          </div>
+        )}
+
         {activeTab === "users" && (
           <div className="dashboard-section">
             <h3>Registered Users</h3>
@@ -86,6 +175,58 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {activeTab === "approveblogs" && (
+          <div className="dashboard-section">
+            <h3>Pending Blog Approvals</h3>
+            <p className="dashboard-subtitle">Review and approve student blog submissions</p>
+            {getPendingBlogs().length === 0 ? (
+              <p>No pending blog submissions at this time.</p>
+            ) : (
+              getPendingBlogs().map((blog) => (
+                <div key={blog.id} className="list-item" style={{ border: "1px solid var(--border-color)", borderRadius: "8px", marginBottom: "1rem", padding: "1.5rem" }}>
+                  <div className="blog-header">
+                    <h4>{blog.title}</h4>
+                    <span className="blog-status status-pending">PENDING</span>
+                  </div>
+                  <p style={{ marginTop: "0.5rem", color: "var(--text-muted)" }}>
+                    <strong>Author:</strong> {blog.authorName} | <strong>Submitted:</strong> {new Date(blog.createdAt).toLocaleString()}
+                  </p>
+                  {blog.tags && (
+                    <p style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
+                      <strong>Tags:</strong> {blog.tags}
+                    </p>
+                  )}
+                  <div style={{ marginTop: "1rem", padding: "1rem", background: "var(--input-bg)", borderRadius: "8px" }}>
+                    <p>{blog.content}</p>
+                  </div>
+                  <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+                    <button
+                      className="btn"
+                      style={{ background: "#10b981" }}
+                      onClick={() => {
+                        approveBlog(blog.id);
+                        alert("Blog approved successfully!");
+                      }}
+                    >
+                      ✓ Approve
+                    </button>
+                    <button
+                      className="btn"
+                      style={{ background: "#ef4444" }}
+                      onClick={() => {
+                        rejectBlog(blog.id);
+                        alert("Blog rejected.");
+                      }}
+                    >
+                      ✗ Reject
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         )}
 

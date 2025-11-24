@@ -1,31 +1,49 @@
-import React, { useEffect, useState } from "react";
-import "../styles/blogs.css";
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import dummyBlogs from "../data/dummy_blogs.json";
+import "../styles/blogs.css";
 
 export default function Blogs() {
-  const [blogs, setBlogs] = useState([]);
+  const { getApprovedBlogs } = useContext(AuthContext);
+  const approvedBlogs = getApprovedBlogs();
 
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("bitsaBlogs")) || [];
-    setBlogs(stored.length > 0 ? stored : dummyBlogs);
-  }, []);
+  // Show approved student blogs if they exist, otherwise show dummy blogs
+  const blogsToDisplay = approvedBlogs.length > 0 ? approvedBlogs : dummyBlogs.map((blog, index) => ({
+    id: `dummy_${index}`,
+    title: blog.title,
+    authorName: blog.author,
+    content: blog.content,
+    createdAt: blog.date,
+    approvedAt: blog.date,
+    image: blog.image,
+    tags: ""
+  }));
 
   return (
     <section className="blogs-page">
       <h2>BITSA Blogs</h2>
+      <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: "2rem" }}>
+        Insights and experiences shared by our BITSA community
+      </p>
       <div className="blogs-grid">
-        {blogs.length === 0 ? (
-          <p>No blogs available yet.</p>
-        ) : (
-          blogs.map((b, i) => (
-            <div key={i} className="blog-card">
-              {b.image && <img src={b.image} alt={b.title} className="blog-image" />}
-              <h3>{b.title}</h3>
-              <p><em>by {b.author} on {b.date}</em></p>
-              <p>{b.content.slice(0, 150)}...</p>
-            </div>
-          ))
-        )}
+        {blogsToDisplay.map((blog) => (
+          <div key={blog.id} className="blog-card">
+            {blog.image && <img src={blog.image} alt={blog.title} className="blog-image" />}
+            <h3>{blog.title}</h3>
+            <p><em>by {blog.authorName}</em></p>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>
+              Published: {new Date(blog.approvedAt || blog.createdAt).toLocaleDateString()}
+            </p>
+            {blog.tags && (
+              <div style={{ marginTop: "0.5rem", fontSize: "0.8rem" }}>
+                <span style={{ color: "var(--color-accent)", fontWeight: "bold" }}>
+                  Tags: {blog.tags}
+                </span>
+              </div>
+            )}
+            <p style={{ marginTop: "1rem" }}>{blog.content.slice(0, 200)}...</p>
+          </div>
+        ))}
       </div>
     </section>
   );
