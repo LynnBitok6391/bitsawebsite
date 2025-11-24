@@ -14,15 +14,27 @@ export default function Gallery() {
   return (
     <section className="gallery-page">
       <h2>BITSA Moments</h2>
+      <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: "2rem" }}>
+        Capturing memories from our events, workshops, and community gatherings
+      </p>
       <div className="gallery-grid">
         {images.map((img, i) => (
-          <img key={i} src={img.url} alt={img.caption || "BITSA event photo"} onClick={() => setActive(img.url)} />
+          <div key={i} className="gallery-item" onClick={() => setActive(img)}>
+            <img src={img.url} alt={img.caption || "BITSA event photo"} />
+            <div className="gallery-caption">
+              <p>{img.caption}</p>
+            </div>
+          </div>
         ))}
       </div>
 
       {active && (
         <div className="lightbox" onClick={() => setActive(null)}>
-          <img src={active} alt="Enlarged BITSA event photo" />
+          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <img src={active.url} alt={active.caption} />
+            <p className="lightbox-caption">{active.caption}</p>
+            <button className="close-lightbox" onClick={() => setActive(null)}>×</button>
+          </div>
         </div>
       )}
     </section>

@@ -52,25 +52,25 @@ export function AuthProvider({ children }) {
     const templates = {
       student: {
         id: "student_1",
-        name: "Student User",
+        name: "Lynn",
         email: "student@bitsa.edu",
         role: "student"
       },
       lecturer: {
         id: "lecturer_1",
-        name: "Lecturer User",
+        name: "Mr Mwangi",
         email: "lecturer@bitsa.edu",
         role: "lecturer"
       },
       admin: {
         id: "admin_1",
-        name: "Admin User",
+        name: "Allan",
         email: "admin@bitsa.edu",
         role: "admin"
       },
       alumni: {
         id: "alumni_1",
-        name: "Alumni User",
+        name: "Prof Justus",
         email: "alumni@bitsa.edu",
         role: "alumni"
       },

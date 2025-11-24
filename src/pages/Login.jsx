@@ -12,10 +12,10 @@ export default function Login() {
 
   // Dummy users for testing
   const users = [
-    { email: "admin@bitsa.com", password: "admin123", name: "Admin User", role: "admin" },
-    { email: "lecturer@bitsa.com", password: "lecturer123", name: "Lecturer User", role: "lecturer" },
-    { email: "student@bitsa.com", password: "student123", name: "Student User", role: "student" },
-    { email: "alumni@bitsa.com", password: "alumni123", name: "Alumni User", role: "alumni" },
+    { email: "admin@bitsa.com", password: "admin123", name: "Allan", role: "admin" },
+    { email: "lecturer@bitsa.com", password: "lecturer123", name: "Mr Mwangi", role: "lecturer" },
+    { email: "student@bitsa.com", password: "student123", name: "Lynn", role: "student" },
+    { email: "alumni@bitsa.com", password: "alumni123", name: "Prof Justus", role: "alumni" },
   ];
 
   const handleLogin = (e) => {

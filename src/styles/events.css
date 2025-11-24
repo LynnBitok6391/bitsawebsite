@@ -16,9 +16,11 @@
   background: var(--card-bg);
   border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 0 8px rgba(0,0,0,0.3);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
+  text-align: left;
 }
+
 .event-card:hover {
   transform: translateY(-5px);
 }
@@ -29,4 +31,24 @@
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 1rem;
+}
+
+/* Event Status Badges - Dark Mode Support */
+[data-theme="dark"] .status-ongoing {
+  background: #065f46 !important;
+  color: #d1fae5 !important;
+}
+
+[data-theme="dark"] .status-upcoming {
+  background: #1e40af !important;
+  color: #dbeafe !important;
+}
+
+.event-card .btn {
+  transition: all 0.3s ease;
+}
+
+.event-card .btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
